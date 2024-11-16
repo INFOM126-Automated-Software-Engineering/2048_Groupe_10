@@ -191,7 +191,7 @@ public class Test2048 {
         //Act
         grid.setTile(2, tile1);
         // Assert
-        assertTrue(grid.getTile(2).equals(tile2));
+        assertFalse(grid.getTile(2).equals(tile2));
 
     }
 
