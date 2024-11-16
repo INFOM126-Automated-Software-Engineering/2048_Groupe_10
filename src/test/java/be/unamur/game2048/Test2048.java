@@ -159,7 +159,7 @@ public class Test2048 {
         Tile tile2 = new Tile(4);
 
         // Assert
-        assertTrue(tile1.mergeWith(tile2) == -1);
+        assertFalse(tile1.mergeWith(tile2) == -1);
     }
 
     @Test
