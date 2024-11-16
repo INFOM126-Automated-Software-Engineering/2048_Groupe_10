@@ -5,7 +5,7 @@ Avec macOS
 
 Il faut mettre en place un serveur x11 (XQuartz pour macOS ca marche très bien):
 après l'avoir installer, on tape la commande :
-xhost +
+xhost +, 
 pour pourmettre au conteneur Docker d'ouvrir la socker TCP avec le serveur x11 et avoir la GUI accessible
 
 Commande Docker :
