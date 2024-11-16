@@ -17,4 +17,4 @@ docker run \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   --rm sasuke3/2048:latest
  
- Normalement cela marche !
+ Normalement cela marche ! 
