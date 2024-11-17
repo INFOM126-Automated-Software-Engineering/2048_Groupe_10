@@ -18,3 +18,4 @@ docker run \
   --rm sasuke3/2048:latest
  
  Normalement cela marche ! 
+
