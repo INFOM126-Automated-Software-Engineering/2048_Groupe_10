@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"be.unamur.game2048"},{"l":"be.unamur.game2048.controllers"},{"l":"be.unamur.game2048.helpers"},{"l":"be.unamur.game2048.models"},{"l":"be.unamur.game2048.views"}];updateSearchResults();
