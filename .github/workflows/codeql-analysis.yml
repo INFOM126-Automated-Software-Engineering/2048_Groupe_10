@@ -37,7 +37,7 @@ jobs:
       - name: Run OWASP Dependency-Check
         env:
           JAVA_HOME: $(/usr/libexec/java_home)
-          PATH: $JAVA_HOME/jre/bin:$PATH
+#          PATH: $JAVA_HOME/jre/bin:$PATH
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: "2048_Groupe_10"
