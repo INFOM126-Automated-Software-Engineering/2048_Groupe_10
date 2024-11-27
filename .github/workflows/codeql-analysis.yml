@@ -1,12 +1,16 @@
-name: Dependency Check
+name: Dependency Vulnerability Analysis
 
 on: workflow_dispatch
 #  push:
 #    branches:
 #      - main
+#  pull_request:
+#    branches:
+#      - main
 
 jobs:
-  dependency-check:
+  analyze-dependencies:
+    name: Analyze Dependencies with OWASP Dependency-Check
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +23,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Install Dependencies
+        run: mvn install --no-transfer-progress
+
       - name: Run OWASP Dependency-Check
         run: |
-          curl -sSL https://get.dependency-check.org/dependency-check.sh | sh
-          ./dependency-check/bin/dependency-check.sh --project "2048_Groupe_10" --scan . --format ALL
+          mvn org.owasp:dependency-check-maven:check
