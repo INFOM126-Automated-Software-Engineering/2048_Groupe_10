@@ -9,52 +9,40 @@ on: workflow_dispatch
 #      - main
 
 jobs:
-  owasp-scan:
-    if: github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-20.04
+  dependency-check:
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: 17
-          distribution: 'adopt'
-          server-id: github
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          cache: 'maven'
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Get Date
-        id: get-date
-        run: |
-          echo "datetime=$(/bin/date -u "+%Y%m%d%H")" >> $GITHUB_OUTPUT
-        shell: bash
-      - name: Restore cached Maven dependencies
-        uses: actions/cache/restore@v3
+      - name: Cache Maven packages
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          # Using datetime in cache key as OWASP database may change, without the pom changing
-          key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}
             ${{ runner.os }}-maven-
 
-      - name: Build & scan
-        id: scan
+      - name: Install OWASP Dependency-Check
         run: |
-          mvn --no-transfer-progress clean package -DskipTests -DnvdApiKey=${{secrets.nvdApiKey}} -DskipITs -Dmax.cvss.score=8 \
-            org.owasp:dependency-check-maven:check
-        env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME}}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD}}
+          curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.3/dependency-check-6.5.3-release.zip -o dependency-check.zip
+          unzip dependency-check.zip -d dependency-check
+          sudo ln -s $PWD/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
 
-      - name: Cache Maven dependencies
-        uses: actions/cache/save@v3
-        if: always()
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
-      - uses: actions/upload-artifact@v3
+      - name: Run OWASP Dependency-Check
+        run: |
+          dependency-check --project "2048_Groupe_10" --scan . --format "HTML" --out dependency-check-report
+
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
-          path: target/dependency-check-report.html
+          path: dependency-check-report
+
