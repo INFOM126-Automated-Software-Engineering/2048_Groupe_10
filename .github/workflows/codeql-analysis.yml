@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -30,19 +30,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Install OWASP Dependency-Check
-        uses: dependency-check/Dependency-Check_Action@main
-        id: Depcheck
+      - name: Run OWASP Dependency-Check
+        run: mvn org.owasp:dependency-check-maven:check
+
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@v2
         with:
-          project: 'test'
-          path: '.'
-          format: 'HTML'
-          out: 'reports' # this is the default, no need to specify unless you wish to override it
-          args: >
-            --failOnCVSS 7
-            --enableRetired
-      - name: Upload Test results
-        uses: actions/upload-artifact@master
-        with:
-          name: Depcheck report
-          path: ${{github.workspace}}/reports
+          name: dependency-check-report
+          path: target/dependency-check-report.html
