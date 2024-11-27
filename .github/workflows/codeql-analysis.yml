@@ -9,32 +9,48 @@ on: workflow_dispatch
 #      - main
 
 jobs:
-  dependency-check:
-    runs-on: ubuntu-latest
-
+  owasp-scan:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Setup Java
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          java-version: 17
+          distribution: 'adopt'
+          server-id: github
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          cache: 'maven'
 
-      - name: Cache Maven packages
-        uses: actions/cache@v3
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "datetime=$(/bin/date -u "+%Y%m%d%H")" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Restore cached Maven dependencies
+        uses: actions/cache/restore@v3
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          # Using datetime in cache key as OWASP database may change, without the pom changing
+          key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
+            ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}
             ${{ runner.os }}-maven-
 
-      - name: Run OWASP Dependency-Check
-        run: mvn org.owasp:dependency-check-maven:check
+      - name: Build & scan
+        id: scan
+        run: |
+          mvn --no-transfer-progress clean package -DskipTests -DnvdApiKey=${{secrets.nvdApiKey}} -DskipITs -Dmax.cvss.score=8 \
+            org.owasp:dependency-check-maven:check -l ${{github.workspace}}/mvn-output.txt
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME}}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD}}
 
-      - name: Upload Dependency-Check report
-        uses: actions/upload-artifact@v3
+      - name: Cache Maven dependencies
+        uses: actions/cache/save@v3
+        if: always()
         with:
-          name: dependency-check-report
-          path: target/dependency-check-report.html
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
