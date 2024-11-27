@@ -30,15 +30,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Install OWASP Dependency-Check
-        run: |
-          curl -L https://github.com/jeremylong/DependencyCheck/releases/download/v6.5.3/dependency-check-6.5.3-release.zip -o dependency-check.zip
-          unzip dependency-check.zip -d dependency-check
-          sudo ln -s $PWD/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
+      - name: Build project with Maven
+        run: mvn clean install
 
       - name: Run OWASP Dependency-Check
-        run: |
-          dependency-check --project "2048_Groupe_10" --scan . --format "HTML" --out dependency-check-report
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: "2048_Groupe_10"
+          path: "."
+          format: "HTML"
+          out: "dependency-check-report"
 
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@v3
