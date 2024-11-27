@@ -38,7 +38,7 @@ jobs:
 
       - name: Run OWASP Dependency-Check
         run: |
-          dependency-check --project "2048_Groupe_10" --scan . --format "HTML" --out dependency-check-report
+          sh ./$PWD/dependency-check/bin/dependency-check.sh --project "2048_Groupe_10" --scan . --format "HTML" --out dependency-check-report
 
       - name: Upload Dependency-Check report
         uses: actions/upload-artifact@v3
