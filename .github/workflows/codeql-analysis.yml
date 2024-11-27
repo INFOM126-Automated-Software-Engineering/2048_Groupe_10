@@ -1,0 +1,25 @@
+name: Dependency Check
+
+on: workflow_dispatch
+#  push:
+#    branches:
+#      - main
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run OWASP Dependency-Check
+        run: |
+          curl -sSL https://get.dependency-check.org/dependency-check.sh | sh
+          ./dependency-check/bin/dependency-check.sh --project "2048_Groupe_10" --scan . --format ALL
