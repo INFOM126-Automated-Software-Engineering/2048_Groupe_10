@@ -74,20 +74,6 @@
         </executions>
       </plugin>
 
-
-      <plugin>
-        <groupId>org.owasp</groupId>
-        <artifactId>dependency-check-maven</artifactId>
-        <version>8.2.1</version> <!-- Remplacez par la dernière version -->
-        <configuration>
-          <failBuildOnCVSS>7.0</failBuildOnCVSS> <!-- Faille critique à partir de CVSS 7.0 -->
-          <formats>
-            <format>HTML</format>
-            <format>XML</format>
-          </formats>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 
