@@ -56,5 +56,5 @@ jobs:
           key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
       - uses: actions/upload-artifact@v3
         with:
-          name: Package
-          path: staging
+          name: dependency-check-report
+          path: target/dependency-check-report.html
