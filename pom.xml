@@ -78,14 +78,13 @@
       <plugin>
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
-        <version>6.5.3</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
+        <version>8.2.1</version>
+        <configuration>
+          <formats>
+            <format>SARIF</format>
+          </formats>
+          <outputDirectory>${project.build.directory}</outputDirectory>
+        </configuration>
       </plugin>
 
     </plugins>
