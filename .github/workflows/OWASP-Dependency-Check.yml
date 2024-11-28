@@ -53,13 +53,13 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: dependency-check-report
-          path: target/dependency-check-report.html
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: dependency-check-report
+#          path: target/dependency-check-report.html
 
       - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: target/dependency-check-report.sarif
 
