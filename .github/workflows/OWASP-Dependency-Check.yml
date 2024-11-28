@@ -10,10 +10,6 @@ on: workflow_dispatch
 #  schedule:
 #    - cron: '0 0 * * 1' # Exécution hebdomadaire le lundi
 
-permissions:
-  security-events: write
-  contents: read
-
 jobs:
   owasp-scan:
     if: github.actor != 'dependabot[bot]'
@@ -57,13 +53,8 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ steps.get-date.outputs.datetime }}-${{ hashFiles('**/pom.xml') }}
-#      - uses: actions/upload-artifact@v3
-#        with:
-#          name: dependency-check-report
-#          path: target/dependency-check-report.html
-
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+      - uses: actions/upload-artifact@v3
         with:
-          sarif_file: target/dependency-check-report.sarif
+          name: dependency-check-report
+          path: target/dependency-check-report.html
 
