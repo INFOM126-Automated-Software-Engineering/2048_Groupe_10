@@ -8,6 +8,10 @@ on: workflow_dispatch
 #    branches:
 #      - main
 
+permissions:
+  security-events: write
+  contents: read
+
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
