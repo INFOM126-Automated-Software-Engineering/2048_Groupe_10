@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  stale-issues:
+  stale:
     runs-on: ubuntu-latest
     steps:
       - name: Mark Stale Issues
