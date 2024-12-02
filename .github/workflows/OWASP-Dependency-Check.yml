@@ -1,4 +1,4 @@
-name: OWASP Dependency-Check
+name: Dependency Vulnerability Analysis
 
 on: workflow_dispatch
 #  push:
@@ -16,33 +16,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Cache Maven packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build project with Maven
-        run: mvn clean install
-
-      - name: Run OWASP Dependency-Check
+      - name: Install OWASP Dependency-Check
         uses: dependency-check/Dependency-Check_Action@main
+        env:
+          # actions/setup-java@v1 changes JAVA_HOME so it needs to be reset to match the depcheck image
+          JAVA_HOME: /opt/jdk
+        id: Depcheck
         with:
-          project: "2048_Groupe_10"
-          path: "."
-          format: "HTML"
-          out: "dependency-check-report"
-
-      - name: Upload Dependency-Check report
-        uses: actions/upload-artifact@v3
+          project: 'test'
+          path: '.'
+          format: 'HTML'
+          out: 'reports' # this is the default, no need to specify unless you wish to override it
+          args: >
+            --failOnCVSS 7
+            --enableRetired
+      - name: Upload Test results
+        uses: actions/upload-artifact@master
         with:
-          name: dependency-check-report
-          path: dependency-check-report
+          name: Depcheck report
+          path: ${{github.workspace}}/reports
