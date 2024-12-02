@@ -8,10 +8,6 @@ on: workflow_dispatch
 #    branches:
 #      - main
 
-permissions:
-  security-events: write
-  contents: read
-
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
@@ -42,8 +38,3 @@ jobs:
         with:
           name: dependency-check-report
           path: target/dependency-check-report.html
-
-      - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: target/dependency-check-report.sarif
