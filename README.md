@@ -12,7 +12,7 @@ pour pourmettre au conteneur Docker d'ouvrir la socker TCP avec le serveur x11 e
 
 Commande Docker :
 
-docker run \
+docker run \    
   -e DISPLAY=host.docker.internal:0 \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   --rm sasuke3/2048:latest
