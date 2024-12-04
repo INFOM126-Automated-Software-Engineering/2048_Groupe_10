@@ -44,8 +44,8 @@ jobs:
           java -javaagent:./opentelemetry-javaagent.jar \
             -Dotel.metrics.exporter=none \
             -Dotel.traces.exporter=none \
-            -Dotel.logs.exporter=none \
-            mvn clean install
+            -Dotel.logs.exporter=none &
+          mvn clean install
           END=$(date +%s)
           echo "Build Time: $(($END - $START)) seconds"
 
