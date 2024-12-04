@@ -50,10 +50,9 @@ jobs:
           MEM_BEFORE=$(free -m | awk '/^Mem:/ {print $3}')
           echo "Memory Before Build: ${MEM_BEFORE} MB" >> metrics.txt
 
-          # Compilation avec mesure
-          /usr/bin/time -f "Elapsed Time: %e seconds" -o time.txt mvn clean install
-          BUILD_TIME=$(cat time.txt | awk '/Elapsed Time:/ {print $NF}')
-          echo "Build Time: ${BUILD_TIME} seconds" >> metrics.txt
+          # Compilation avec mesure du temps (sortie brute)
+          BUILD_TIME=$( { time mvn clean install ; } 2>&1 | grep real | awk '{print $2}' | sed 's/^0m//;s/s$//' )
+          echo "Build Time: ${BUILD_TIME}" >> metrics.txt
 
           # Mémoire après compilation
           MEM_AFTER=$(free -m | awk '/^Mem:/ {print $3}')
