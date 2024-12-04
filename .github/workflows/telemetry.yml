@@ -51,7 +51,7 @@ jobs:
           echo "Memory Before Build: ${MEM_BEFORE} MB" >> metrics.txt
 
           # Compilation avec mesure du temps (sortie brute)
-          BUILD_TIME=$( { time mvn clean install ; } 2>&1 | grep real | awk '{print $2}' | sed 's/^0m//;s/s$//' )
+          BUILD_TIME=$( { time mvn clean install ; } 2>&1 | grep real | sed 's/real\s*\(.*\)/\1/' | sed 's/m/s/' )
           echo "Build Time: ${BUILD_TIME}" >> metrics.txt
 
           # Mémoire après compilation
