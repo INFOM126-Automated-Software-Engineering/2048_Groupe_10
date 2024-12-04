@@ -12,18 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Étape 1 : Récupérer le code source
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Étape 2 : Installer le JDK (Java 17, ajustez si nécessaire)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Étape 3 : Mettre en cache les dépendances Maven
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Verify Maven
+        run: mvn --version
+
       - name: Cache Maven dependencies
         uses: actions/cache@v3
         with:
@@ -32,23 +35,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Étape 4 : Télécharger l'agent OpenTelemetry
       - name: Download OpenTelemetry Java Agent
         run: curl -sSL -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
 
-      # Étape 5 : Mesurer le temps de compilation et collecter des métriques
       - name: Build and collect metrics
         run: |
-          START=$(date +%s) # Démarrer le chronomètre
+          START=$(date +%s)
           java -javaagent:./opentelemetry-javaagent.jar \
             -Dotel.metrics.exporter=none \
             -Dotel.traces.exporter=none \
-            -Dotel.logs.exporter=stdout \
+            -Dotel.logs.exporter=none \
             mvn clean install
-          END=$(date +%s) # Arrêter le chronomètre
+          END=$(date +%s)
           echo "Build Time: $(($END - $START)) seconds"
 
-      # Étape 6 : Afficher les ressources système utilisées
       - name: Display Resource Usage
         run: |
           echo "CPU Usage:"
