@@ -40,37 +40,36 @@ jobs:
 
       - name: Collect Build Metrics
         run: |
-          # Préparation du fichier metrics.txt
+          # Initialisation du fichier
           echo "=== Build Metrics ===" > metrics.txt
 
           # Temps de début
           START=$(date +%s)
-          echo "Start Time: $(date -d @$START)" >> metrics.txt
 
           # Mémoire avant compilation
-          echo "Memory Usage Before Build:" >> metrics.txt
-          free -m >> metrics.txt
+          MEM_BEFORE=$(free -m | awk '/^Mem:/ {print $3}')
+          echo "Memory Before Build: ${MEM_BEFORE} MB" >> metrics.txt
 
-          # Compilation et métriques détaillées
-          echo "=== Compilation Details ===" >> metrics.txt
-          /usr/bin/time -v mvn clean install 2>&1 | tee -a metrics.txt
-
-          # Temps de fin
-          END=$(date +%s)
-          echo "End Time: $(date -d @$END)" >> metrics.txt
-          echo "Total Build Time: $(($END - $START)) seconds" >> metrics.txt
+          # Compilation avec mesure
+          /usr/bin/time -f "Elapsed Time: %e seconds" -o time.txt mvn clean install
+          BUILD_TIME=$(cat time.txt | awk '/Elapsed Time:/ {print $NF}')
+          echo "Build Time: ${BUILD_TIME} seconds" >> metrics.txt
 
           # Mémoire après compilation
-          echo "Memory Usage After Build:" >> metrics.txt
-          free -m >> metrics.txt
+          MEM_AFTER=$(free -m | awk '/^Mem:/ {print $3}')
+          echo "Memory After Build: ${MEM_AFTER} MB" >> metrics.txt
+
+          # Calcul de la mémoire utilisée
+          MEM_USED=$((${MEM_AFTER} - ${MEM_BEFORE}))
+          echo "Memory Used During Build: ${MEM_USED} MB" >> metrics.txt
 
           # Utilisation CPU globale
-          echo "=== CPU Usage ===" >> metrics.txt
-          top -bn1 | grep "Cpu(s)" >> metrics.txt
+          CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+          echo "CPU Usage: ${CPU_USAGE}%" >> metrics.txt
 
-          # Utilisation spécifique par Maven
-          echo "=== Top Processes ===" >> metrics.txt
-          ps aux --sort=-%cpu | head -n 10 >> metrics.txt
+          # Utilisation des ressources spécifiques
+          echo "Top Processes by CPU Usage:" >> metrics.txt
+          ps aux --sort=-%cpu | head -n 5 >> metrics.txt
 
       - name: Upload Metrics Artifact
         uses: actions/upload-artifact@v3
