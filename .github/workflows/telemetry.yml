@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - add_telemetry
   pull_request:
 
 jobs:
@@ -38,32 +37,42 @@ jobs:
       - name: Download OpenTelemetry Java Agent
         run: curl -sSL -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
 
-      - name: Measure Build Metrics
+      - name: Collect Build Metrics
         run: |
-          # Capture memory usage before build
-          echo "Memory before build:"
-          free -m
+          # Préparation du fichier metrics.txt
+          echo "=== Build Metrics ===" > metrics.txt
 
-          # Start timing and run build
+          # Temps de début
           START=$(date +%s)
-          java -javaagent:./opentelemetry-javaagent.jar \
-            -Dotel.metrics.exporter=none \
-            -Dotel.traces.exporter=none \
-            -Dotel.logs.exporter=none &
-          /usr/bin/time -v mvn clean install
+          echo "Start Time: $(date -d @$START)" >> metrics.txt
+
+          # Mémoire avant compilation
+          echo "Memory Usage Before Build:" >> metrics.txt
+          free -m >> metrics.txt
+
+          # Compilation et métriques détaillées
+          echo "=== Compilation Details ===" >> metrics.txt
+          /usr/bin/time -v mvn clean install 2>&1 | tee -a metrics.txt
+
+          # Temps de fin
           END=$(date +%s)
+          echo "End Time: $(date -d @$END)" >> metrics.txt
+          echo "Total Build Time: $(($END - $START)) seconds" >> metrics.txt
 
-          # Capture memory usage after build
-          echo "Memory after build:"
-          free -m
+          # Mémoire après compilation
+          echo "Memory Usage After Build:" >> metrics.txt
+          free -m >> metrics.txt
 
-          # Compute and display build time
-          echo "Build Time: $(($END - $START)) seconds"
+          # Utilisation CPU globale
+          echo "=== CPU Usage ===" >> metrics.txt
+          top -bn1 | grep "Cpu(s)" >> metrics.txt
 
-          # Display CPU usage
-          echo "CPU Usage:"
-          top -bn1 | grep "Cpu(s)"
+          # Utilisation spécifique par Maven
+          echo "=== Top Processes ===" >> metrics.txt
+          ps aux --sort=-%cpu | head -n 10 >> metrics.txt
 
-          # Process-specific CPU and memory usage
-          echo "Detailed resource usage:"
-          ps aux --sort=-%cpu | head -n 10
+      - name: Upload Metrics Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-metrics
+          path: metrics.txt
