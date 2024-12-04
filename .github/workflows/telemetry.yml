@@ -38,20 +38,32 @@ jobs:
       - name: Download OpenTelemetry Java Agent
         run: curl -sSL -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
 
-      - name: Build and collect metrics
+      - name: Measure Build Metrics
         run: |
+          # Capture memory usage before build
+          echo "Memory before build:"
+          free -m
+
+          # Start timing and run build
           START=$(date +%s)
           java -javaagent:./opentelemetry-javaagent.jar \
             -Dotel.metrics.exporter=none \
             -Dotel.traces.exporter=none \
             -Dotel.logs.exporter=none &
-          mvn clean install
+          /usr/bin/time -v mvn clean install
           END=$(date +%s)
+
+          # Capture memory usage after build
+          echo "Memory after build:"
+          free -m
+
+          # Compute and display build time
           echo "Build Time: $(($END - $START)) seconds"
 
-      - name: Display Resource Usage
-        run: |
+          # Display CPU usage
           echo "CPU Usage:"
           top -bn1 | grep "Cpu(s)"
-          echo "Memory Usage:"
-          free -m
+
+          # Process-specific CPU and memory usage
+          echo "Detailed resource usage:"
+          ps aux --sort=-%cpu | head -n 10
