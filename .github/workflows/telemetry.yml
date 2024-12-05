@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - add_telemetry
   pull_request:
 
 jobs:
