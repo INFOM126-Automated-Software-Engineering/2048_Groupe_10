@@ -2,9 +2,9 @@ name: Java Maven Build & Publish Artifact (.Jar)
 
 on:
   push:
-    branches: [ "Maven" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "Maven" ]
+    branches: [ "main" ]
 
 jobs:
   build_test:
