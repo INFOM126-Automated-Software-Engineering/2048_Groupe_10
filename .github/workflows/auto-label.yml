@@ -4,6 +4,9 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  issues: write  # Donne la permission d'écrire sur les issues
+
 jobs:
   auto-label:
     runs-on: ubuntu-latest
