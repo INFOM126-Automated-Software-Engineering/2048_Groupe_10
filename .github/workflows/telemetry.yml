@@ -1,0 +1,76 @@
+name: CI-Telemetry
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Maven
+        run: sudo apt-get update && sudo apt-get install -y maven
+
+      - name: Verify Maven
+        run: mvn --version
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Download OpenTelemetry Java Agent
+        run: curl -sSL -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+
+      - name: Collect Build Metrics
+        run: |
+          # Initialisation du fichier
+          echo "=== Build Metrics ===" > metrics.txt
+
+          # Temps de début
+          START=$(date +%s)
+
+          # Mémoire avant compilation
+          MEM_BEFORE=$(free -m | awk '/^Mem:/ {print $3}')
+          echo "Memory Before Build: ${MEM_BEFORE} MB" >> metrics.txt
+
+          # Compilation avec mesure du temps (sortie brute)
+          BUILD_TIME=$( { time mvn clean install ; } 2>&1 | grep real | sed 's/real\s*\(.*\)/\1/' | sed 's/m/s/' )
+          echo "Build Time: ${BUILD_TIME}" >> metrics.txt
+
+          # Mémoire après compilation
+          MEM_AFTER=$(free -m | awk '/^Mem:/ {print $3}')
+          echo "Memory After Build: ${MEM_AFTER} MB" >> metrics.txt
+
+          # Calcul de la mémoire utilisée
+          MEM_USED=$((${MEM_AFTER} - ${MEM_BEFORE}))
+          echo "Memory Used During Build: ${MEM_USED} MB" >> metrics.txt
+
+          # Utilisation CPU globale
+          CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+          echo "CPU Usage: ${CPU_USAGE}%" >> metrics.txt
+
+          # Utilisation des ressources spécifiques
+          echo "Top Processes by CPU Usage:" >> metrics.txt
+          ps aux --sort=-%cpu | head -n 5 >> metrics.txt
+
+      - name: Upload Metrics Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-metrics
+          path: metrics.txt

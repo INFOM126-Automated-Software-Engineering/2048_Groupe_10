@@ -1,0 +1,41 @@
+name: Auto Label Issues
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write  # Donne la permission d'écrire sur les issues
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Analyze issue content and label
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          # Initialisation du label
+          LABEL=""
+
+          # Vérifie les phrases spécifiques pour détecter les types d'issue
+          if echo "$ISSUE_BODY" | grep -iq "Is your feature request related to a problem"; then
+            LABEL="enhancement"
+          elif echo "$ISSUE_BODY" | grep -iq "Describe the bug"; then
+            LABEL="bug"
+          else
+            LABEL="needs-triage"
+          fi
+
+          # Ajouter le label comme une sortie
+          echo "LABEL=$LABEL" >> $GITHUB_ENV
+
+      - name: Apply the label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: ${{ env.LABEL }}
