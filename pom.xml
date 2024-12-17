@@ -39,6 +39,7 @@
         <configuration>
           <archive>
             <manifest>
+              <addClasspath>true</addClasspath>
               <mainClass>be.unamur.game2048.Game</mainClass>
             </manifest>
           </archive>
