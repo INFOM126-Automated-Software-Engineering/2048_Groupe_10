@@ -40,12 +40,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Étape 5 : Téléverser l'artefact dans la Release
+      # Étape pour trouver le fichier JAR généré
+      - name: Find JAR file
+        id: find_jar
+        run: |
+          JAR_FILE=$(find target -name "*.jar" | head -n 1) # Trouve le premier fichier .jar dans target/
+          echo "JAR file found: $JAR_FILE"
+          echo "jar_file=$JAR_FILE" >> $GITHUB_ENV
+
+      # Étape pour téléverser l'artefact dans la Release
       - name: Upload JAR to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: target/*.jar
+          asset_path: ${{ env.jar_file }} # Utilise le chemin dynamique trouvé
           asset_name: app.jar
           asset_content_type: application/java-archive
         env:
