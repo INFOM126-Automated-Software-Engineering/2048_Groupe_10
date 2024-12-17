@@ -26,7 +26,7 @@ There are three ways to play this game:
      ```
 
 2. **Download the .jar file**:
-   - Go to the "Releases" tab of this GitHub repository.
+   - Go to the "Package" tab of this GitHub repository.
    - Download the `***.jar` file.
    - Run the game:
      ```bash
