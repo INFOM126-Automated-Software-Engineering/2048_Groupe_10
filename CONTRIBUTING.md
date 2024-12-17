@@ -25,6 +25,8 @@ Our project follows the Git-Flow branching strategy to ensure a smooth and organ
 
 By following this branching strategy, we ensure that our codebase remains stable and that new features are integrated smoothly.
 
+<img width="595" alt="Capture d’écran 2024-12-17 à 15 44 50" src="https://github.com/user-attachments/assets/7790150e-0712-426e-910d-e6efcbf11538" />
+
 ## How to Contribute Feature Ideas
 
 We greatly appreciate your ideas to improve our 2048 project! To propose a new feature, please follow the steps below:
