@@ -8,7 +8,9 @@ on:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write # Permission pour écrire dans les releases
+      
     steps:
       # Étape 1 : Checkout du code
       - uses: actions/checkout@v4
