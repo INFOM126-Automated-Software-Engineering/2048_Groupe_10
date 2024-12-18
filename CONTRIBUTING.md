@@ -1,5 +1,22 @@
 # Contributing guidelines
 
+## Table of Contents
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Branch Strategy](#branch-strategy)
+- [How to Contribute Feature Ideas](#how-to-contribute-feature-ideas)
+- [What Happens Next](#what-happens-next)
+- [How to Contribute Code](#how-to-contribute-code)
+- [Commit Message Formats](#commit-message-formats)
+
+## Code of Conduct
+
+Everyone involved in this project is expected to adhere to the guidelines and principles outlined by the governing [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Getting Started
+
+Before contributing, please ensure your local environment is properly set up and take some time to understand the development workflow. Please refer to our [Setup Guide](SETUP_GUIDE.md).
+
 ## Branch Strategy
 
 Our project follows the Git-Flow branching strategy to ensure a smooth and organized development process. Here’s how we manage our branches:
@@ -114,7 +131,9 @@ We welcome contributions from open-source developers! To add code to our project
 
 By following these steps, you help maintain the quality and stability of our project. Thank you for your contributions!
 
-## Commit Message Formats (https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13)
+## Commit Message Formats 
+
+(https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13)
 
 ### Default
 <pre>
