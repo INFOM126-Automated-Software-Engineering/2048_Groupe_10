@@ -51,4 +51,4 @@ There are three ways to play this game:
      ```powershell
      ./Open_Docker_Windows.ps1
      ```
-Enjoy playing 2048!
+Enjoy playing 2048! 
