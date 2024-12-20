@@ -23,9 +23,9 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Find JAR file
+    - name: Find main JAR file
       id: find_jar
-      run: echo "::set-output name=jar_file::$(ls target/*.jar)"
+      run: echo "::set-output name=jar_file::$(ls target/2048-1.0.0.jar)"
 
     - name: Create GitHub Release
       id: create_release
@@ -45,5 +45,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ${{ steps.find_jar.outputs.jar_file }}
-        asset_name: ${{ steps.find_jar.outputs.jar_file }}
+        asset_name: 2048-1.0.0.jar
         asset_content_type: application/java-archive
