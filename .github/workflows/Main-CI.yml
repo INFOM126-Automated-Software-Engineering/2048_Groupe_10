@@ -13,7 +13,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Maven Package
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
         id: maven-publish
 
@@ -26,7 +26,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Deploy Documentation
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
         id: deploy-docs
 
@@ -39,6 +39,6 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Docker Build
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
         id: create-docker
