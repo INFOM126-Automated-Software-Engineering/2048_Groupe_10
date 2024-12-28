@@ -1,0 +1,44 @@
+name: Sequential Workflow Execution
+
+on:
+  workflow_dispatch:
+
+jobs:
+  trigger-workflows:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Déclencher maven-publish
+      - name: Trigger Maven Publish
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Maven Package
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+        id: maven-publish
+
+      # Étape 2 : Attendre que maven-publish termine
+      - name: Wait for Maven Publish
+        run: sleep 30
+
+      # Étape 3 : Déclencher deploy-docs
+      - name: Trigger Deploy Docs
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy Documentation
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+        id: deploy-docs
+
+      # Étape 4 : Attendre que deploy-docs termine
+      - name: Wait for Deploy Docs
+        run: sleep 30
+
+      # Étape 5 : Déclencher createDocker
+      - name: Trigger Create Docker
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Docker Build
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+        id: create-docker
