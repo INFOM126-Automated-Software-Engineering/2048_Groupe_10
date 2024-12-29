@@ -1,4 +1,4 @@
-name: CI-Telemetry
+name: Telemetry
 
 on:
   push:

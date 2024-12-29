@@ -1,4 +1,4 @@
-name: Dependency Vulnerability Analysis
+name: OWASP Dependency-Check Vulnerability
 
 on: workflow_dispatch
 #  push:
