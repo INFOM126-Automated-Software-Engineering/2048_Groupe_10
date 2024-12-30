@@ -1,9 +1,13 @@
 name: Checkstyle Linter
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+      - develop
+      - hotfix/*
+      - v/*
+      - feature/*
 
 jobs:
   checkstyle:

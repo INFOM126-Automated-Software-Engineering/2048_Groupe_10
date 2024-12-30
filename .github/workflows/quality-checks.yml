@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+      - develop
+      - hotfix/*
+      - v/*
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
