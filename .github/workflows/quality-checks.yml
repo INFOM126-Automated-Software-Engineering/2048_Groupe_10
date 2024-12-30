@@ -6,6 +6,7 @@ on:
       - develop
       - hotfix/*
       - v/*
+      - feature/*
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
