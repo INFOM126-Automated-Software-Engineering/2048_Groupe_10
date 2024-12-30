@@ -1,14 +1,13 @@
 name: Sonar Qube
 on:
-  push:
+  pull_request:
     branches:
       - main
       - develop
       - hotfix/*
       - v/*
       - feature/*
-  pull_request:
-    types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
