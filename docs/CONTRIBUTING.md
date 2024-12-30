@@ -27,7 +27,7 @@ Our project follows the Git-Flow branching strategy to ensure a smooth and organ
 
 2. **Supporting Branches**:
    - **Feature Branches**: These branches are created for developing new features. They are branched off from `develop` and merged back into `develop` once the feature is complete.
-     - Naming convention: `feature/issue-<issue-number>` (e.g., `feature/issue-123`)
+     - Naming convention: `feature/issue-#<issue-number>` (e.g., `feature/issue-#123`)
    - **Release Branches**: These branches are used to prepare for a new production release. They allow for last-minute fixes and preparation tasks.
      - Naming convention: `release/<version>` (e.g., `release/1.0.0`)
    - **Hotfix Branches**: These branches are created for urgent fixes that need to be applied to the `main` branch immediately. They are branched off from `main` and merged back into both `main` and `develop`.
@@ -78,7 +78,7 @@ Once your feature request is validated (if it is), the following steps will be t
    - We will also assess the maintainability of the feature to ensure it does not require excessive ongoing work.
 
 2. **Branch Creation**:
-   - If the feature meets the criteria, we will create a new branch named after the issue number (e.g., `feature/issue-123`).
+   - If the feature meets the criteria, we will create a new branch named after the issue number (e.g., `feature/issue-#123`).
 
 3. **Collaboration**:
    - Code owners and open-source developers can then contribute to writing the new feature based on the issue and the described requirements.
@@ -98,8 +98,8 @@ We welcome contributions from open-source developers! To add code to our project
    - Fork the repository to your GitHub account.
    - Clone the forked repository to your local machine.
 
-2. **Select a Feature Branch**:
-   - Choose an existing feature branch that you wish to contribute to. These branches are named after the issue number (e.g., `feature/issue-123`).
+2. **Select a Feature or Issue Branch**:
+   - Choose an existing branch that you wish to contribute to. Feature branches are typically named after the issue they address (e.g., `feature/issue-#123`).
    - The specifications for each feature can be found in the Issues section, labeled as `new feature validate`, with the corresponding branch number.
 
 3. **Follow Coding Standards**:
