@@ -74,7 +74,7 @@ On Linux, you need to manually configure and set up the X11 server to allow the 
 ### Configuration
 1. Allow connections to the X11 server:
    ```bash
-   xhost +local:docker
+   xhost +
 
 2. Run the Docker container:
    ```bash
